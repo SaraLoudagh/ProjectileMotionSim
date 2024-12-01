@@ -35,10 +35,22 @@ public class HelloApplication extends Application {
         Menu fileMenu = new Menu("File");
         MenuItem exitMenuItem = new MenuItem("Exit");
         fileMenu.getItems().add(exitMenuItem);
-
         exitMenuItem.setOnAction(e -> stage.close());
-
         menuBar.getMenus().add(fileMenu);
+
+        // theory button
+        Button lessonButton = new Button("Lesson");
+        lessonButton.setOnAction(e -> {
+            Stage lessonStage = new Stage();
+
+            // write the lesson
+            Label lessonLabel = new Label("Lesson label");
+
+            VBox lessonVBox = new VBox(lessonLabel);
+            Scene lessonScene = new Scene(lessonVBox);
+            lessonStage.setTitle("Lesson");
+            lessonStage.showAndWait();
+        });
 
         // velocity
         Label veloLabel = new Label("Velocity");
@@ -126,8 +138,15 @@ public class HelloApplication extends Application {
         typeVBox.setAlignment(Pos.CENTER);
         typeVBox.setPadding(new Insets(20));
 
+        // vbox for lesson button
+        Label lessonButtonLabel = new Label("Click on the button for theory explanation");
+        lessonButtonLabel.setPadding(new Insets(20));
+        VBox lessonButtonVbox = new VBox(lessonButtonLabel, lessonButton);
+        lessonButtonVbox.setAlignment(Pos.CENTER);
+        lessonButtonVbox.setPadding(new Insets(20));
+
         //main vbox
-        VBox mainVbox = new VBox(veloVbox, chosenVelo, angleVbox, heightVbox, typeVBox);
+        VBox mainVbox = new VBox(lessonButtonVbox, veloVbox, chosenVelo, angleVbox, heightVbox, typeVBox);
 
         // main hbox
         HBox mainHbox = new HBox(rectanglePane, mainVbox);

@@ -5,6 +5,7 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.HBox;
@@ -24,6 +25,11 @@ public class HelloApplication extends Application {
         double TOP_Y = 200;
 
         Rectangle ledge = new Rectangle(-100, 450, 200, 100);
+
+        // combobox to choose the projectile type
+        ComboBox comboBox = new ComboBox();
+        comboBox.getItems().addAll("Cannon", "Human");
+        comboBox.getSelectionModel().selectFirst();
 
         // velocity
         Label veloLabel = new Label("Velocity");
@@ -106,17 +112,19 @@ public class HelloApplication extends Application {
         // pane for person or something
         Pane rectanglePane = new Pane(person,ledge);
 
+        Label typeLabel = new Label("Type of projectile");
+        VBox typeVBox = new VBox(comboBox);
+        typeVBox.setAlignment(Pos.CENTER);
+        typeVBox.setPadding(new Insets(20));
 
         //main vbox
-        VBox mainVbox = new VBox(veloVbox, chosenVelo, angleVbox, heightVbox);
+        VBox mainVbox = new VBox(veloVbox, chosenVelo, angleVbox, heightVbox, typeVBox);
 
         // main hbox
         HBox mainHbox = new HBox(rectanglePane, mainVbox);
-
         mainHbox.setAlignment(Pos.CENTER);
 
         mainVbox.setAlignment(Pos.CENTER_RIGHT);
-
         mainVbox.setPadding(new Insets(20));
 
 

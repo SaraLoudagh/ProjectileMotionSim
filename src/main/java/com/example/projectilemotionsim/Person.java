@@ -1,6 +1,7 @@
 package com.example.projectilemotionsim;
 
 import javafx.geometry.Pos;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -19,14 +20,20 @@ public class Person extends VBox {
 
         Polyline legs = new Polyline(-2, -9, 0, -5, 2, -9);
         legs.setRotate(180);
-        Polyline arms = new Polyline(-5, -9, 0, -5, 5, -9);
+
+        Line leftArm = new Line(-5, -9, 0, -5);
+        Line rightArm = new Line(0, -5, 5, -9);
 
 
-        VBox body = new VBox(head, arms, torso, legs);
+//        Polyline arms = new Polyline(-5, -9, 0, -5, 5, -9);
+
+
+        VBox body = new VBox(head, torso, legs);
+        HBox armsAndBody = new HBox(leftArm, body, rightArm);
         body.setAlignment(Pos.CENTER);
 
         this.setAlignment(Pos.CENTER);
-        this.getChildren().addAll(head, arms, torso, legs);
+        this.getChildren().addAll(head, armsAndBody, torso, legs);
 
 
 

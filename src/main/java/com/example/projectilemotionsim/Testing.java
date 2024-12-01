@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class HelloApplication extends Application {
+public class Testing extends Application {
 
     private static final double gravity = 9.81;
     private Pane rectanglePane; // Pane to hold the trajectory and objects
@@ -134,11 +134,14 @@ public class HelloApplication extends Application {
 
         });
 
+
+
         rectanglePane = new Pane(person,ledge, trajectory, projectile);
         rectanglePane.setMinSize(600, 600);
 
 
         person.setLayoutY(416);
+
 
 
         VBox mainVbox = new VBox(veloVbox, chosenVelo, angleVbox, heightVbox);

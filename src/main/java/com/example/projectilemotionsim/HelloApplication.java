@@ -86,12 +86,12 @@ public class HelloApplication extends Application {
         veloVbox.setSpacing(10);
         veloVbox.setPadding(new Insets(20));
 
-        VBox angleVbox = new VBox(angleLabel, angleSlider);
+        VBox angleVbox = new VBox(angleLabel, angleSlider, chosenAngle);
         angleVbox.setAlignment(Pos.TOP_RIGHT);
         angleVbox.setSpacing(10);
         angleVbox.setPadding(new Insets(20));
 
-        VBox heightVbox = new VBox(heightLabel, heightSlider);
+        VBox heightVbox = new VBox(heightLabel, heightSlider, chosenHeight);
         heightVbox.setAlignment(Pos.TOP_RIGHT);
         heightVbox.setSpacing(10);
         heightVbox.setPadding(new Insets(20));
@@ -144,20 +144,20 @@ public class HelloApplication extends Application {
 
 
 
-        VBox mainVbox = new VBox(veloVbox, chosenVelo, angleVbox, heightVbox);
+        HBox parameters = new HBox(veloVbox, angleVbox, heightVbox);
+        parameters.setAlignment(Pos.CENTER);
+        VBox mainVbox = new VBox(rectanglePane, parameters);
 
 
-        HBox mainHbox = new HBox(rectanglePane, mainVbox);
+//        HBox mainHbox = new HBox(rectanglePane, parameters);
 
-        mainHbox.setAlignment(Pos.CENTER);
+        mainVbox.setAlignment(Pos.CENTER);
 
-        mainVbox.setAlignment(Pos.CENTER_RIGHT);
+        parameters.setAlignment(Pos.CENTER);
 
-        mainVbox.setPadding(new Insets(20));
+        parameters.setPadding(new Insets(20));
 
-
-
-        Scene scene = new Scene(mainHbox, 800, 600);
+        Scene scene = new Scene(mainVbox, 800, 600);
 
         stage.setScene(scene);
         stage.show();

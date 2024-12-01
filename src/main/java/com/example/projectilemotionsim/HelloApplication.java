@@ -25,6 +25,7 @@ public class HelloApplication extends Application {
 
         Rectangle ledge = new Rectangle(-100, 450, 200, 100);
 
+        // velocity
         Label veloLabel = new Label("Velocity");
         Slider veloSlider = new Slider(0, 1000, 0);
         veloSlider.setMaxWidth(200);
@@ -35,7 +36,7 @@ public class HelloApplication extends Application {
         Label chosenVelo = new Label("0.00");
 
 
-
+        // angle
         Label angleLabel = new Label("Angle");
         Slider angleSlider = new Slider(0, 360, 0);
         angleSlider.setMaxWidth(200);
@@ -45,7 +46,7 @@ public class HelloApplication extends Application {
         angleSlider.setBlockIncrement(5);
         Label chosenAngle = new Label("0.00");
 
-
+        // height
         Label heightLabel = new Label("Height");
         Slider heightSlider = new Slider(0, 500, 50);
         heightSlider.setMaxWidth(200);
@@ -56,28 +57,31 @@ public class HelloApplication extends Application {
         Label chosenHeight = new Label("0.00");
 
 
-
+        // velocity vbox
         VBox veloVbox = new VBox(veloLabel, veloSlider, chosenVelo);
         veloVbox.setAlignment(Pos.TOP_RIGHT);
         veloVbox.setSpacing(10);
         veloVbox.setPadding(new Insets(20));
 
+        // angle vbox
         VBox angleVbox = new VBox(angleLabel, angleSlider);
         angleVbox.setAlignment(Pos.TOP_RIGHT);
         angleVbox.setSpacing(10);
         angleVbox.setPadding(new Insets(20));
 
+        // height vbox
         VBox heightVbox = new VBox(heightLabel, heightSlider);
         heightVbox.setAlignment(Pos.TOP_RIGHT);
         heightVbox.setSpacing(10);
         heightVbox.setPadding(new Insets(20));
 
+        // person
         Person person = new Person();
 //        person.setScaleX(3);
 //        person.setScaleY(3);
 
 
-
+        // slider listeners
         veloSlider.valueProperty().addListener((observable, oldvalue, newvalue) -> {
             chosenVelo.setText(String.format("Velocity: %.2f", newvalue));
         });
@@ -99,12 +103,14 @@ public class HelloApplication extends Application {
 
         });
 
+        // pane for person or something
         Pane rectanglePane = new Pane(person,ledge);
 
 
-
+        //main vbox
         VBox mainVbox = new VBox(veloVbox, chosenVelo, angleVbox, heightVbox);
 
+        // main hbox
         HBox mainHbox = new HBox(rectanglePane, mainVbox);
 
         mainHbox.setAlignment(Pos.CENTER);
@@ -116,7 +122,7 @@ public class HelloApplication extends Application {
 
 
         Scene scene = new Scene(mainHbox, 800, 600);
-
+        stage.setTitle("Projectile Motion Simulator");
         stage.setScene(scene);
         stage.show();
     }

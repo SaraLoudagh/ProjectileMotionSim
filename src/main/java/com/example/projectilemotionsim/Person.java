@@ -27,15 +27,6 @@ public class Person extends VBox {
 
         this.setAlignment(Pos.CENTER);
         this.getChildren().addAll(head, arms, torso, legs);
-
-
-
-
-
-
-
-
-
     }
 
 

@@ -5,9 +5,8 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
+import javafx.scene.control.*;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -30,6 +29,16 @@ public class HelloApplication extends Application {
         ComboBox comboBox = new ComboBox();
         comboBox.getItems().addAll("Cannon", "Human");
         comboBox.getSelectionModel().selectFirst();
+
+        // menu
+        MenuBar menuBar = new MenuBar();
+        Menu fileMenu = new Menu("File");
+        MenuItem exitMenuItem = new MenuItem("Exit");
+        fileMenu.getItems().add(exitMenuItem);
+
+        exitMenuItem.setOnAction(e -> stage.close());
+
+        menuBar.getMenus().add(fileMenu);
 
         // velocity
         Label veloLabel = new Label("Velocity");
@@ -124,12 +133,17 @@ public class HelloApplication extends Application {
         HBox mainHbox = new HBox(rectanglePane, mainVbox);
         mainHbox.setAlignment(Pos.CENTER);
 
+        // BorderPane
+        BorderPane borderPane = new BorderPane();
+        borderPane.setCenter(mainHbox);
+        borderPane.setTop(menuBar);
+
         mainVbox.setAlignment(Pos.CENTER_RIGHT);
         mainVbox.setPadding(new Insets(20));
 
 
 
-        Scene scene = new Scene(mainHbox, 800, 600);
+        Scene scene = new Scene(borderPane, 800, 600);
         stage.setTitle("Projectile Motion Simulator");
         stage.setScene(scene);
         stage.show();

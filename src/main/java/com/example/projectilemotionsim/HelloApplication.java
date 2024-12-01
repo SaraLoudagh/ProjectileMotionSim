@@ -8,8 +8,8 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
+import javafx.scene.control.*;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -48,6 +48,34 @@ public class HelloApplication extends Application {
 
 //        Rectangle
         ledge = new Rectangle(-100, 450, 200, 100);
+
+        MenuBar menuBar = new MenuBar();
+        Menu fileMenu = new Menu("File");
+        MenuItem exitMenuItem = new MenuItem("Exit");
+        fileMenu.getItems().add(exitMenuItem);
+
+        exitMenuItem.setOnAction(e -> stage.close());
+
+        menuBar.getMenus().add(fileMenu);
+
+        // theory button
+        Button lessonButton = new Button("Lesson");
+        lessonButton.setOnAction(e -> {
+            Stage lessonStage = new Stage();
+
+            // write the lesson
+            Label lessonLabel = new Label("Lesson label");
+
+            VBox lessonVBox = new VBox(lessonLabel);
+            Scene lessonScene = new Scene(lessonVBox);
+            lessonStage.setTitle("Lesson");
+            lessonStage.showAndWait();
+        });
+
+        // combobox to choose the projectile type
+        ComboBox comboBox = new ComboBox();
+        comboBox.getItems().addAll( "Human", "Cannon");
+        comboBox.getSelectionModel().selectFirst(); // automaticall select first option
 
         Label veloLabel = new Label("Velocity");
         Slider veloSlider = new Slider(0, 100, 0);
@@ -142,22 +170,34 @@ public class HelloApplication extends Application {
 
         person.setLayoutY(416);
 
+        Label typeLabel = new Label("Type of projectile");
+        VBox typeVBox = new VBox(comboBox);
+        typeVBox.setAlignment(Pos.CENTER);
+        typeVBox.setPadding(new Insets(20));
 
+        // vbox for lesson button
+        Label lessonButtonLabel = new Label("Click on the button for theory explanation");
+        lessonButtonLabel.setPadding(new Insets(20));
+        VBox lessonButtonVbox = new VBox(lessonButtonLabel, lessonButton);
+        lessonButtonVbox.setAlignment(Pos.CENTER);
+        lessonButtonVbox.setPadding(new Insets(20));
 
-        VBox mainVbox = new VBox(veloVbox, chosenVelo, angleVbox, heightVbox);
-
+        VBox mainVbox = new VBox(lessonButtonVbox, veloVbox, chosenVelo, angleVbox, heightVbox, typeVBox);
 
         HBox mainHbox = new HBox(rectanglePane, mainVbox);
-
         mainHbox.setAlignment(Pos.CENTER);
 
-        mainVbox.setAlignment(Pos.CENTER_RIGHT);
+        // BorderPane
+        BorderPane borderPane = new BorderPane();
+        borderPane.setCenter(mainHbox);
+        borderPane.setTop(menuBar);
 
+        mainVbox.setAlignment(Pos.CENTER_RIGHT);
         mainVbox.setPadding(new Insets(20));
 
 
 
-        Scene scene = new Scene(mainHbox, 800, 600);
+        Scene scene = new Scene(borderPane, 800, 600);
 
         stage.setScene(scene);
         stage.show();

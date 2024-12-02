@@ -76,23 +76,18 @@ public class HelloApplication extends Application {
         lessonButton.setOnAction(e -> {
             Stage lessonStage = new Stage();
 
-            // write the lesson
-            Label lessonLabel = new Label("Lesson label");
             TextArea textArea = new TextArea(lessonText);
             textArea.setWrapText(true); // Wraps text for better readability
             textArea.setEditable(false); // Makes it read-only
 
-            VBox lessonVBox = new VBox(lessonLabel);
-            Scene lessonScene = new Scene(lessonVBox);
-            lessonStage.setTitle("Lesson");
-//            Scene lessonScene = new Scene(textArea, 400, 300);
+            Scene lessonScene = new Scene(textArea, 400, 300);
             lessonStage.setTitle("Lesson: Projectile Motion");
             lessonStage.setScene(lessonScene);
             lessonStage.showAndWait();
         });
 
         // combobox to choose the projectile type
-        ComboBox comboBox = new ComboBox();
+        ComboBox<String> comboBox = new ComboBox();
         comboBox.getItems().addAll("Human", "Cannon");
         comboBox.getSelectionModel().selectFirst(); // automatically select first option
 
@@ -227,6 +222,7 @@ public class HelloApplication extends Application {
         Scene scene = new Scene(borderPane, 1000, 1000);
 
         stage.setScene(scene);
+        stage.setTitle("Projectile Motion Simulator");
         stage.show();
 
         updateTrajectory(veloSlider, angleSlider, heightSlider);

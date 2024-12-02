@@ -6,6 +6,7 @@ import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
@@ -30,7 +31,7 @@ public class HelloApplication extends Application {
     private static final double gravity = 9.81;
     private Pane rectanglePane; // Pane to hold the trajectory and objects
     private Rectangle ledge; // The ledge object
-    private Person person; // The person object
+//    private Person person; // The person object
     private Polyline trajectory; // The trajectory line
 
     private List<Double> precomputedPoints; // Stores the precomputed trajectory points
@@ -39,6 +40,8 @@ public class HelloApplication extends Application {
     private Line ground;
 
     private Circle projectile;
+    private Node currentObject; // Can hold any JavaFX Node (Person or Cannon)
+
 
     private String lessonText = """
             Projectile motion is a form of motion experienced by an object that is thrown near the Earth's surface.
@@ -57,6 +60,10 @@ public class HelloApplication extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
+
+        currentObject = new Person(); // Default to Person
+        currentObject.setLayoutY(416);
+        currentObject.setLayoutX(90);
 
         ground = new Line(0, 550, 800, 550);
 
@@ -137,11 +144,36 @@ public class HelloApplication extends Application {
         heightVbox.setPadding(new Insets(20));
 
 //        Person
-        person = new Person();
-        person.setLayoutY(416);
-        person.setLayoutX(90);
+//        person = new Person();
+//        person.setLayoutY(416);
+//        person.setLayoutX(90);
 //        person.setScaleX(3);
 //        person.setScaleY(3);
+
+        // combobox event handling
+        comboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+            // Remove the current object from the pane
+            if (currentObject != null) {
+                rectanglePane.getChildren().remove(currentObject);
+            }
+
+            // Create and add the new object based on the selection
+            if (newValue.equals("Human")) {
+                currentObject = new Person();
+            } else if (newValue.equals("Cannon")) {
+                currentObject = new Cannon();
+            }
+
+            // Set layout and add the new object to the pane
+            currentObject.setLayoutY(416);
+            currentObject.setLayoutX(90);
+            rectanglePane.getChildren().add(currentObject);
+
+            // Update the trajectory
+            updateTrajectory(veloSlider, angleSlider, heightSlider);
+        });
+
+
 
         trajectory = new Polyline();
         trajectory.setStroke(Color.BLUE);
@@ -169,20 +201,23 @@ public class HelloApplication extends Application {
             double bottomY = ledge.getY() + ledge.getHeight();
             ledge.setHeight(newvalue.doubleValue());
             ledge.setY(bottomY - newvalue.doubleValue());
-            person.setLayoutY(ledge.getY() - person.getHeight());
+            if (currentObject != null) {
+                currentObject.setLayoutY(ledge.getY() - ((Node) currentObject).getBoundsInParent().getHeight());
+            }
             updateTrajectory(veloSlider, angleSlider, heightSlider);
 
         });
 
 
-        rectanglePane = new Pane(person, ledge, ground, trajectory, projectile);
+        rectanglePane = new Pane(currentObject, ledge, ground, trajectory, projectile);
         rectanglePane.setMinSize(600, 600);
 
 
-        person.setLayoutY(416);
-        person.setLayoutX(90);
+//        person.setLayoutY(416);
+//        person.setLayoutX(90);
 
         Label typeLabel = new Label("Type of projectile");
+        typeLabel.setPadding(new Insets(20));
         VBox typeVBox = new VBox(typeLabel, comboBox);
         typeVBox.setAlignment(Pos.CENTER);
         typeVBox.setPadding(new Insets(20));

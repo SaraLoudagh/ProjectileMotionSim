@@ -2,7 +2,6 @@ package com.example.projectilemotionsim;
 
 
 import javafx.animation.KeyFrame;
-import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -38,6 +37,21 @@ public class HelloApplication extends Application {
 
     private Circle projectile;
 
+    private String lessonText = """
+            Projectile motion is a form of motion experienced by an object that is thrown near the Earth's surface.
+            It moves along a curved path under the action of gravity only.
+            
+            Key Concepts:
+            1. The horizontal motion and vertical motion are independent.
+            2. The horizontal velocity remains constant.
+            3. The vertical motion is affected by gravity, with an acceleration of 9.8 m/s².
+            
+            Examples:
+            - Throwing a ball.
+            - A cannonball fired from a cannon.
+            - Water sprayed from a fountain.
+            """;
+
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -63,19 +77,21 @@ public class HelloApplication extends Application {
         lessonButton.setOnAction(e -> {
             Stage lessonStage = new Stage();
 
-            // write the lesson
-            Label lessonLabel = new Label("Lesson label");
+            TextArea textArea = new TextArea(lessonText);
+            textArea.setWrapText(true); // Wraps text for better readability
+            textArea.setEditable(false); // Makes it read-only
 
-            VBox lessonVBox = new VBox(lessonLabel);
-            Scene lessonScene = new Scene(lessonVBox);
-            lessonStage.setTitle("Lesson");
+
+            Scene lessonScene = new Scene(textArea, 400, 300);
+            lessonStage.setTitle("Lesson: Projectile Motion");
+            lessonStage.setScene(lessonScene);
             lessonStage.showAndWait();
         });
 
         // combobox to choose the projectile type
         ComboBox comboBox = new ComboBox();
         comboBox.getItems().addAll( "Human", "Cannon");
-        comboBox.getSelectionModel().selectFirst(); // automaticall select first option
+        comboBox.getSelectionModel().selectFirst(); // automatically select first option
 
         Label veloLabel = new Label("Velocity");
         Slider veloSlider = new Slider(0, 100, 0);

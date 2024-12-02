@@ -58,8 +58,6 @@ public class HelloApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
 
-        ground = new Line(0, 550, 800, 550);
-
         ledge = new Rectangle(-100, 450, 200, 100);
 
 
@@ -143,8 +141,6 @@ public class HelloApplication extends Application {
 
 //        Person
         person = new Person();
-        person.setLayoutY(416);
-        person.setLayoutX(90);
 //        person.setScaleX(3);
 //        person.setScaleY(3);
 
@@ -180,15 +176,14 @@ public class HelloApplication extends Application {
         });
 
 
-        rectanglePane = new Pane(person, ledge, ground, trajectory, projectile);
+        rectanglePane = new Pane(person, ledge, trajectory, projectile);
         rectanglePane.setMinSize(600, 600);
 
 
         person.setLayoutY(416);
-        person.setLayoutX(90);
 
         Label typeLabel = new Label("Type of projectile");
-        VBox typeVBox = new VBox(typeLabel, comboBox);
+        VBox typeVBox = new VBox(comboBox);
         typeVBox.setAlignment(Pos.CENTER);
         typeVBox.setPadding(new Insets(20));
 
@@ -199,32 +194,21 @@ public class HelloApplication extends Application {
         lessonButtonVbox.setAlignment(Pos.CENTER);
         lessonButtonVbox.setPadding(new Insets(20));
 
+        VBox mainVbox = new VBox(lessonButtonVbox, veloVbox, chosenVelo, angleVbox, heightVbox, typeVBox);
 
-
-//        HBox mainHbox = new HBox(rectanglePane, mainVbox);
-//        mainHbox.setAlignment(Pos.CENTER);
-
-
-        HBox typeAndTheory = new HBox(lessonButtonVbox, typeVBox);
-        typeAndTheory.setAlignment(Pos.TOP_CENTER);
-
-        HBox parameters = new HBox(veloVbox, angleVbox, heightVbox);
-        parameters.setAlignment(Pos.CENTER);
-        VBox mainVbox = new VBox(typeAndTheory, rectanglePane, parameters);
+        HBox mainHbox = new HBox(rectanglePane, mainVbox);
+        mainHbox.setAlignment(Pos.CENTER);
 
         // BorderPane
         BorderPane borderPane = new BorderPane();
-        borderPane.setCenter(mainVbox);
+        borderPane.setCenter(mainHbox);
         borderPane.setTop(menuBar);
-
-
-
 
         mainVbox.setAlignment(Pos.CENTER_RIGHT);
         mainVbox.setPadding(new Insets(20));
 
 
-        Scene scene = new Scene(borderPane, 1000, 1000);
+        Scene scene = new Scene(borderPane, 800, 600);
 
         stage.setScene(scene);
         stage.show();
@@ -272,12 +256,12 @@ public class HelloApplication extends Application {
         do {
             x = velocityX * t;
             y = height + (velocityY * t) - (0.5 * gravity * t * t);
-            double adjustedY = 594 - y; // Adjust for JavaFX pane coordinates
+            double adjustedY = 600 - y; // Adjust for JavaFX pane coordinates
 
             if (adjustedY > ledgeBottomY) break;
 
-            precomputedPoints.add(x + 102);  // Adjust for pane coordinates (x)
-            precomputedPoints.add(594 - y); // Adjust for pane coordinates (y)
+            precomputedPoints.add(x + 50);  // Adjust for pane coordinates (x)
+            precomputedPoints.add(600 - y); // Adjust for pane coordinates (y)
             t += timeStep;
         } while (true); // Continue until it hits the ground
     }

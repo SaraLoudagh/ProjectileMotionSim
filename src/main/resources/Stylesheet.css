@@ -1,0 +1,7 @@
+/* CSS Style Sheet for Bold and Fancy Text */
+.label {
+    -fx-font-family: cursive;
+    -fx-font-size: 14pt;
+    -fx-font-style: italic;
+    -fx-border-style: dashed;
+}

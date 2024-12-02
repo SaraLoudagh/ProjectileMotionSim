@@ -4,6 +4,7 @@ package com.example.projectilemotionsim;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.css.Stylesheet;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -23,6 +24,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import javax.swing.text.html.StyleSheet;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -104,8 +106,10 @@ public class HelloApplication extends Application {
             verticalImageView.setPreserveRatio(true);
 
             Label horizontalLabel = new Label("Horizontal motion formula:");
+            horizontalLabel.getStylesheets().add("Stylesheet.css");
             HBox horizontalBox = new HBox(horizontalLabel, horizontalImageView);
             Label verticalLabel = new Label("Vertical motion formula:");
+            verticalLabel.getStylesheets().add("Stylesheet.css");
             HBox verticalBox = new HBox(verticalLabel, verticalImageView);
 
             VBox lessonMainVBox = new VBox(textArea, horizontalBox, verticalBox);

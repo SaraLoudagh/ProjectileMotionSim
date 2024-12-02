@@ -43,6 +43,7 @@ public class HelloApplication extends Application {
 
     private Circle projectile;
     private Node currentObject; // Can hold any JavaFX Node (Person or Cannon)
+    private Label xDistanceLabel, yDistanceLabel; // Labels for distances
 
 
     private String lessonText = """
@@ -69,6 +70,9 @@ public class HelloApplication extends Application {
         ground = new Line(0, 550, 800, 550);
 
         ledge = new Rectangle(-100, 450, 200, 100);
+
+        xDistanceLabel = new Label("Distance X: 0.00");
+        yDistanceLabel = new Label("Max Height: 0.00");
 
 
         MenuBar menuBar = new MenuBar();
@@ -123,7 +127,7 @@ public class HelloApplication extends Application {
         veloSlider.setShowTickLabels(true);
         veloSlider.setMajorTickUnit(100);
         veloSlider.setBlockIncrement(1);
-        Label chosenVelo = new Label("0.00");
+        Label chosenVelo = new Label("0.00 m/s");
 
 
         Label angleLabel = new Label("Angle");
@@ -133,7 +137,7 @@ public class HelloApplication extends Application {
         angleSlider.setShowTickLabels(true);
         angleSlider.setMajorTickUnit(20);
         angleSlider.setBlockIncrement(5);
-        Label chosenAngle = new Label("0.00");
+        Label chosenAngle = new Label("0.00 degrees");
 
 
         Label heightLabel = new Label("Height");
@@ -143,7 +147,7 @@ public class HelloApplication extends Application {
         heightSlider.setShowTickLabels(true);
         heightSlider.setMajorTickUnit(100);
         heightSlider.setBlockIncrement(1);
-        Label chosenHeight = new Label("0.00");
+        Label chosenHeight = new Label("0.00 m");
 
 
         VBox veloVbox = new VBox(veloLabel, veloSlider, chosenVelo);
@@ -151,12 +155,12 @@ public class HelloApplication extends Application {
         veloVbox.setSpacing(10);
         veloVbox.setPadding(new Insets(20));
 
-        VBox angleVbox = new VBox(angleLabel, angleSlider);
+        VBox angleVbox = new VBox(angleLabel, angleSlider, chosenAngle);
         angleVbox.setAlignment(Pos.TOP_RIGHT);
         angleVbox.setSpacing(10);
         angleVbox.setPadding(new Insets(20));
 
-        VBox heightVbox = new VBox(heightLabel, heightSlider);
+        VBox heightVbox = new VBox(heightLabel, heightSlider, chosenHeight);
         heightVbox.setAlignment(Pos.TOP_RIGHT);
         heightVbox.setSpacing(10);
         heightVbox.setPadding(new Insets(20));
@@ -212,19 +216,19 @@ public class HelloApplication extends Application {
 
 
         veloSlider.valueProperty().addListener((observable, oldvalue, newvalue) -> {
-            chosenVelo.setText(String.format("Velocity: %.2f", newvalue));
+            chosenVelo.setText(String.format("Velocity: %.2f m/s", newvalue));
             updateTrajectory(veloSlider, angleSlider, heightSlider);
         });
 
         angleSlider.valueProperty().addListener((observable, oldvalue, newvalue) -> {
-            chosenAngle.setText(String.format("Angle: %.2f", newvalue));
+            chosenAngle.setText(String.format("Angle: %.2f degrees", newvalue));
             updateTrajectory(veloSlider, angleSlider, heightSlider);
 
         });
 
 
         heightSlider.valueProperty().addListener((observable, oldvalue, newvalue) -> {
-            chosenHeight.setText(String.format("Height: %.2f", newvalue));
+            chosenHeight.setText(String.format("Height: %.2f m", newvalue));
             double bottomY = ledge.getY() + ledge.getHeight();
             ledge.setHeight(newvalue.doubleValue());
             ledge.setY(bottomY - newvalue.doubleValue());
@@ -263,8 +267,9 @@ public class HelloApplication extends Application {
 //        mainHbox.setAlignment(Pos.CENTER);
 
 
-        HBox typeAndTheory = new HBox(lessonButtonVbox, typeVBox);
+        HBox typeAndTheory = new HBox(lessonButtonVbox, typeVBox, xDistanceLabel, yDistanceLabel);
         typeAndTheory.setAlignment(Pos.TOP_CENTER);
+        typeAndTheory.setSpacing(10);
 
         HBox parameters = new HBox(veloVbox, angleVbox, heightVbox);
         parameters.setAlignment(Pos.CENTER);
@@ -274,9 +279,6 @@ public class HelloApplication extends Application {
         BorderPane borderPane = new BorderPane();
         borderPane.setCenter(mainVbox);
         borderPane.setTop(menuBar);
-
-
-
 
         mainVbox.setAlignment(Pos.CENTER_RIGHT);
         mainVbox.setPadding(new Insets(20));
@@ -296,6 +298,13 @@ public class HelloApplication extends Application {
         double velocity = veloSlider.getValue();
         double angle = angleSlider.getValue();
         double ledgeTopY = 615 - (ledge.getY());
+        double height = heightSlider.getValue();
+
+        double totalDistance = calculateTotalDistance(velocity, angle, height);
+        double maxHeight = calculateMaxHeight(velocity, angle, height);
+
+        xDistanceLabel.setText(String.format("Distance X: %.2f", totalDistance));
+        yDistanceLabel.setText(String.format("Max Height: %.2f", maxHeight));
 
         calculateProjectilePath(velocity, angle, ledgeTopY); // Precompute points
         trajectory.getPoints().clear();
@@ -365,6 +374,36 @@ public class HelloApplication extends Application {
 
         animationTimeline.setOnFinished(event -> projectile.setVisible(false));
         animationTimeline.play(); // Start the animation
+    }
+
+    private double calculateTotalDistance(double velocity, double angle, double height) {
+
+
+        double angleRadians = Math.toRadians(angle);
+
+        // Horizontal velocity
+        double velocityX = velocity * Math.cos(angleRadians);
+
+        // Vertical velocity
+        double velocityY = velocity * Math.sin(angleRadians);
+
+        // Time to hit the ground (quadratic formula for y = 0)
+        double discriminant = Math.sqrt(velocityY * velocityY + 2 * gravity* height);
+        double timeToGround = (velocityY + discriminant) / gravity;
+
+        // Total horizontal distance
+        return velocityX * timeToGround;
+    }
+
+
+    private double calculateMaxHeight(double velocity, double angle, double height) {
+        double angleRadians = Math.toRadians(angle);
+
+        // Vertical velocity
+        double velocityY = velocity * Math.sin(angleRadians);
+
+        // Maximum height calculation
+        return height + (velocityY * velocityY) / (2 * gravity);
     }
 
 

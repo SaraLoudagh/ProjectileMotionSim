@@ -178,18 +178,24 @@ public class HelloApplication extends Application {
             // Create and add the new object based on the selection
             if (newValue.equals("Human")) {
                 currentObject = new Person();
+                updateObjectPosition(currentObject);
                 currentObject.setLayoutX(90);
+                currentObject.setTranslateY(currentObject.getTranslateY()-18);
+                rectanglePane.getChildren().add(currentObject);
             } else if (newValue.equals("Cannon")) {
                 currentObject = new Cannon();
-                currentObject.setLayoutX(65);
+                currentObject.setLayoutX(60);
+                rectanglePane.getChildren().add(currentObject);
+                updateObjectPosition(currentObject);
+                currentObject.setTranslateY(currentObject.getTranslateY() - 10);
             }
 
             // Set layout and add the new object to the pane
 //            currentObject.setLayoutY(ledge.getY() - ((Node) currentObject).getBoundsInParent().getHeight());
-            if (currentObject != null) {
-                rectanglePane.getChildren().add(currentObject);
-                updateObjectPosition(currentObject);
-            }
+//            if (currentObject != null) {
+//                rectanglePane.getChildren().add(currentObject);
+//                updateObjectPosition(currentObject);
+//            }
             // Update the trajectory
             updateTrajectory(veloSlider, angleSlider, heightSlider);
         });
@@ -368,9 +374,19 @@ public class HelloApplication extends Application {
     }
 
     private void updateObjectPosition(Node object) {
-        // Calculate and set the correct Y position for the current object
-        double newYPosition = ledge.getY() - object.getBoundsInParent().getHeight();
-        object.setLayoutY(newYPosition);
+        if (object instanceof Person) {
+            // Specific logic for Person
+            double newYPosition = ledge.getY() - object.getBoundsInParent().getHeight();
+            object.setLayoutY(newYPosition);
+            object.setTranslateY(0);
+            object.setLayoutX(90); // Adjust X position for the person
+        } else if (object instanceof Cannon) {
+            // Specific logic for Cannon
+            double newYPosition = ledge.getY() - object.getBoundsInParent().getHeight();
+            object.setLayoutY(newYPosition + 10); // Adjust Y position to slightly raise the cannon
+            object.setLayoutX(60); // Adjust X position for the cannon
+            currentObject.setTranslateY(0);
+        }
     }
 
 

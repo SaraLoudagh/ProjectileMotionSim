@@ -46,8 +46,7 @@ public class HelloApplication extends Application {
 
 
     private String lessonText = """
-            Projectile motion is a form of motion experienced by an object that is thrown near the Earth's surface.
-            It moves along a curved path under the action of gravity only.
+            Projectile motion is a form of motion where an object is thrown. It goes in a curved motion and the trajectory depends on various variables such as angle, initial velocity, height and gravitational acceleration. The vertical motion is affected by the gravitational acceleration while the horizontal motion is only affected by air friction, which is insignificant. In other words, the horizontal motion is constant.
                         
             Key Concepts:
             1. The horizontal motion and vertical motion are independent.
@@ -55,9 +54,9 @@ public class HelloApplication extends Application {
             3. The vertical motion is affected by gravity, with an acceleration of 9.8 m/s².
                         
             Examples:
-            - Throwing a ball.
-            - A cannonball fired from a cannon.
-            - Water sprayed from a fountain.
+            - A human throwing a ball.
+            - A cannon firing a cannonball.
+            - A fountain spraying water.
             """;
 
     @Override

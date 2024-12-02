@@ -160,15 +160,18 @@ public class HelloApplication extends Application {
             // Create and add the new object based on the selection
             if (newValue.equals("Human")) {
                 currentObject = new Person();
+                currentObject.setLayoutX(90);
             } else if (newValue.equals("Cannon")) {
                 currentObject = new Cannon();
+                currentObject.setLayoutX(65);
             }
 
             // Set layout and add the new object to the pane
-            currentObject.setLayoutY(416);
-            currentObject.setLayoutX(90);
-            rectanglePane.getChildren().add(currentObject);
-
+//            currentObject.setLayoutY(ledge.getY() - ((Node) currentObject).getBoundsInParent().getHeight());
+            if (currentObject != null) {
+                rectanglePane.getChildren().add(currentObject);
+                updateObjectPosition(currentObject);
+            }
             // Update the trajectory
             updateTrajectory(veloSlider, angleSlider, heightSlider);
         });
@@ -202,7 +205,8 @@ public class HelloApplication extends Application {
             ledge.setHeight(newvalue.doubleValue());
             ledge.setY(bottomY - newvalue.doubleValue());
             if (currentObject != null) {
-                currentObject.setLayoutY(ledge.getY() - ((Node) currentObject).getBoundsInParent().getHeight());
+//                currentObject.setLayoutY(ledge.getY() - ((Node) currentObject).getBoundsInParent().getHeight());
+                updateObjectPosition(currentObject);
             }
             updateTrajectory(veloSlider, angleSlider, heightSlider);
 
@@ -210,7 +214,7 @@ public class HelloApplication extends Application {
 
 
         rectanglePane = new Pane(currentObject, ledge, ground, trajectory, projectile);
-        rectanglePane.setMinSize(600, 600);
+        rectanglePane.setMinSize(400, 400);
 
 
 //        person.setLayoutY(416);
@@ -254,7 +258,7 @@ public class HelloApplication extends Application {
         mainVbox.setPadding(new Insets(20));
 
 
-        Scene scene = new Scene(borderPane, 1000, 1000);
+        Scene scene = new Scene(borderPane, 800, 700);
 
         stage.setScene(scene);
         stage.setTitle("Projectile Motion Simulator");
@@ -344,6 +348,13 @@ public class HelloApplication extends Application {
         projectile.setCenterX(x);
         projectile.setCenterY(y);
     }
+
+    private void updateObjectPosition(Node object) {
+        // Calculate and set the correct Y position for the current object
+        double newYPosition = ledge.getY() - object.getBoundsInParent().getHeight();
+        object.setLayoutY(newYPosition);
+    }
+
 
 
     public static void main(String[] args) {

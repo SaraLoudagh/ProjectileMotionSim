@@ -9,6 +9,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -87,7 +89,24 @@ public class HelloApplication extends Application {
             textArea.setWrapText(true); // Wraps text for better readability
             textArea.setEditable(false); // Makes it read-only
 
-            Scene lessonScene = new Scene(textArea, 400, 300);
+            Image horizontalImage = new Image("File:HorizontalMotion.png");
+            Image verticalImage = new Image("File:VerticalMotion.png");
+
+            ImageView horizontalImageView = new ImageView(horizontalImage);
+            horizontalImageView.setFitHeight(50);
+            horizontalImageView.setPreserveRatio(true);
+            ImageView verticalImageView = new ImageView(verticalImage);
+            verticalImageView.setFitHeight(50);
+            verticalImageView.setPreserveRatio(true);
+
+            Label horizontalLabel = new Label("Horizontal motion formula:");
+            HBox horizontalBox = new HBox(horizontalLabel, horizontalImageView);
+            Label verticalLabel = new Label("Vertical motion formula:");
+            HBox verticalBox = new HBox(verticalLabel, verticalImageView);
+
+            VBox lessonMainVBox = new VBox(textArea, horizontalBox, verticalBox);
+
+            Scene lessonScene = new Scene(lessonMainVBox, 400, 300);
             lessonStage.setTitle("Lesson: Projectile Motion");
             lessonStage.setScene(lessonScene);
             lessonStage.showAndWait();

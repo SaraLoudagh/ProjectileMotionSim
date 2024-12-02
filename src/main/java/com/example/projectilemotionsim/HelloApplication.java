@@ -67,7 +67,7 @@ public class HelloApplication extends Application {
         currentObject.setLayoutY(416);
         currentObject.setLayoutX(90);
 
-        ground = new Line(0, 550, 800, 550);
+        ground = new Line(0, 550, 2000, 550);
 
         ledge = new Rectangle(-100, 450, 200, 100);
 

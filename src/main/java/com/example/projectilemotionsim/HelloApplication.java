@@ -58,8 +58,19 @@ public class HelloApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
 
-        Button lessonButton = new Button("Lesson");
+        ledge = new Rectangle(-100, 450, 200, 100);
 
+
+        MenuBar menuBar = new MenuBar();
+        Menu fileMenu = new Menu("File");
+        MenuItem exitMenuItem = new MenuItem("Exit");
+        fileMenu.getItems().add(exitMenuItem);
+
+        exitMenuItem.setOnAction(e -> stage.close());
+
+        menuBar.getMenus().add(fileMenu);
+
+        Button lessonButton = new Button("Lesson");
         lessonButton.setOnAction(e -> {
             Stage lessonStage = new Stage();
 
@@ -81,7 +92,6 @@ public class HelloApplication extends Application {
         // combobox to choose the projectile type
         ComboBox comboBox = new ComboBox();
         comboBox.getItems().addAll("Human", "Cannon");
-        comboBox.getSelectionModel().selectFirst(); // automaticall select first option
         comboBox.getSelectionModel().selectFirst(); // automatically select first option
 
         Label veloLabel = new Label("Velocity");

@@ -68,6 +68,7 @@ public class HelloApplication extends Application {
         currentObject.setLayoutX(90);
 
         ground = new Line(0, 550, 2000, 550);
+        ground.setStroke(Color.GREEN);
 
         ledge = new Rectangle(-100, 450, 200, 100);
 
@@ -121,7 +122,7 @@ public class HelloApplication extends Application {
         comboBox.getSelectionModel().selectFirst(); // automatically select first option
 
         Label veloLabel = new Label("Velocity");
-        Slider veloSlider = new Slider(0, 100, 0);
+        Slider veloSlider = new Slider(0, 150, 0);
         veloSlider.setMaxWidth(500);
         veloSlider.setShowTickMarks(true);
         veloSlider.setShowTickLabels(true);

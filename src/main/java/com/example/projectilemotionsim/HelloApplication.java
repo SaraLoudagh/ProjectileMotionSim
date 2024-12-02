@@ -370,7 +370,7 @@ public class HelloApplication extends Application {
         animationTimeline = new Timeline();
         for (int i = 0; i < precomputedPoints.size(); i += 2) {
             final int index = i; // Final variable for lambda
-            KeyFrame keyFrame = new KeyFrame(Duration.seconds(index / 20.0), event -> {
+            KeyFrame keyFrame = new KeyFrame(Duration.seconds(index / 50.0), event -> {
                 trajectory.getPoints().addAll(precomputedPoints.get(index), precomputedPoints.get(index + 1));
                 updateProjectilePosition(precomputedPoints.get(index), precomputedPoints.get(index + 1));
             });

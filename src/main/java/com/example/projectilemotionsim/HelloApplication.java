@@ -303,8 +303,8 @@ public class HelloApplication extends Application {
         double totalDistance = calculateTotalDistance(velocity, angle, height);
         double maxHeight = calculateMaxHeight(velocity, angle, height);
 
-        xDistanceLabel.setText(String.format("Distance X: %.2f", totalDistance));
-        yDistanceLabel.setText(String.format("Max Height: %.2f", maxHeight));
+        xDistanceLabel.setText(String.format("Distance X: %.2f m", totalDistance));
+        yDistanceLabel.setText(String.format("Max Height: %.2f m", maxHeight));
 
         calculateProjectilePath(velocity, angle, ledgeTopY); // Precompute points
         trajectory.getPoints().clear();

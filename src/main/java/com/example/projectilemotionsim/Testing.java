@@ -2,19 +2,18 @@ package com.example.projectilemotionsim;
 
 
 import javafx.animation.KeyFrame;
-import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Polyline;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
@@ -36,19 +35,67 @@ public class Testing extends Application {
     private List<Double> precomputedPoints; // Stores the precomputed trajectory points
     private Timeline animationTimeline;    // Timeline for animating the points
 
+    private Line ground;
+
     private Circle projectile;
+
+    private String lessonText = """
+            Projectile motion is a form of motion experienced by an object that is thrown near the Earth's surface.
+            It moves along a curved path under the action of gravity only.
+            
+            Key Concepts:
+            1. The horizontal motion and vertical motion are independent.
+            2. The horizontal velocity remains constant.
+            3. The vertical motion is affected by gravity, with an acceleration of 9.8 m/s².
+            
+            Examples:
+            - Throwing a ball.
+            - A cannonball fired from a cannon.
+            - Water sprayed from a fountain.
+            """;
 
 
     @Override
     public void start(Stage stage) throws IOException {
 
-        final double LEFT_X = 50.0, RIGHT_X =60,  BOTTOM_Y = 600;
+        ground = new Line(0, 550, 800, 550);
 
-        double TOP_Y = 200;
 
-//        Rectangle
         ledge = new Rectangle(-100, 450, 200, 100);
 
+//<<<<<<< HEAD
+//=======
+        MenuBar menuBar = new MenuBar();
+        Menu fileMenu = new Menu("File");
+        MenuItem exitMenuItem = new MenuItem("Exit");
+        fileMenu.getItems().add(exitMenuItem);
+
+        exitMenuItem.setOnAction(e -> stage.close());
+
+        menuBar.getMenus().add(fileMenu);
+
+        // theory button
+        Button lessonButton = new Button("Lesson");
+        lessonButton.setOnAction(e -> {
+            Stage lessonStage = new Stage();
+
+            TextArea textArea = new TextArea(lessonText);
+            textArea.setWrapText(true); // Wraps text for better readability
+            textArea.setEditable(false); // Makes it read-only
+
+
+            Scene lessonScene = new Scene(textArea, 400, 300);
+            lessonStage.setTitle("Lesson: Projectile Motion");
+            lessonStage.setScene(lessonScene);
+            lessonStage.showAndWait();
+        });
+
+        // combobox to choose the projectile type
+        ComboBox comboBox = new ComboBox();
+        comboBox.getItems().addAll( "Human", "Cannon");
+        comboBox.getSelectionModel().selectFirst(); // automatically select first option
+
+//>>>>>>> b08e8808e89bdcdd834b8ad68eff4638e8642e1b
         Label veloLabel = new Label("Velocity");
         Slider veloSlider = new Slider(0, 100, 0);
         veloSlider.setMaxWidth(500);
@@ -86,20 +133,19 @@ public class Testing extends Application {
         veloVbox.setSpacing(10);
         veloVbox.setPadding(new Insets(20));
 
-        VBox angleVbox = new VBox(angleLabel, angleSlider);
+        VBox angleVbox = new VBox(angleLabel, angleSlider, chosenAngle);
         angleVbox.setAlignment(Pos.TOP_RIGHT);
         angleVbox.setSpacing(10);
         angleVbox.setPadding(new Insets(20));
 
-        VBox heightVbox = new VBox(heightLabel, heightSlider);
+        VBox heightVbox = new VBox(heightLabel, heightSlider, chosenHeight);
         heightVbox.setAlignment(Pos.TOP_RIGHT);
         heightVbox.setSpacing(10);
         heightVbox.setPadding(new Insets(20));
 
-//        Person
+
         person = new Person();
-//        person.setScaleX(3);
-//        person.setScaleY(3);
+
 
         trajectory = new Polyline();
         trajectory.setStroke(Color.BLUE);
@@ -111,14 +157,18 @@ public class Testing extends Application {
 
 
 
+
         veloSlider.valueProperty().addListener((observable, oldvalue, newvalue) -> {
             chosenVelo.setText(String.format("Velocity: %.2f", newvalue));
             updateTrajectory(veloSlider, angleSlider, heightSlider);
+
+
         });
 
         angleSlider.valueProperty().addListener((observable, oldvalue, newvalue) -> {
             chosenAngle.setText(String.format("Angle: %.2f", newvalue));
             updateTrajectory(veloSlider, angleSlider, heightSlider);
+
 
         });
 
@@ -130,34 +180,38 @@ public class Testing extends Application {
             ledge.setHeight(newvalue.doubleValue());
             ledge.setY(bottomY - newvalue.doubleValue());
             person.setLayoutY(ledge.getY() - person.getHeight());
+//            clearTrajectory();
             updateTrajectory(veloSlider, angleSlider, heightSlider);
 
         });
 
 
 
-        rectanglePane = new Pane(person,ledge, trajectory, projectile);
+        rectanglePane = new Pane(person, ledge, ground, trajectory, projectile);
         rectanglePane.setMinSize(600, 600);
+
+        rectanglePane.setMaxSize(900, 900);
 
 
         person.setLayoutY(416);
+        person.setLayoutX(90);
 
 
 
-        VBox mainVbox = new VBox(veloVbox, chosenVelo, angleVbox, heightVbox);
+        HBox parameters = new HBox(veloVbox, angleVbox, heightVbox);
+        parameters.setAlignment(Pos.CENTER);
+        VBox mainVbox = new VBox(rectanglePane, parameters);
 
 
-        HBox mainHbox = new HBox(rectanglePane, mainVbox);
+//        HBox mainHbox = new HBox(rectanglePane, parameters);
 
-        mainHbox.setAlignment(Pos.CENTER);
+        mainVbox.setAlignment(Pos.CENTER);
 
-        mainVbox.setAlignment(Pos.CENTER_RIGHT);
+        parameters.setAlignment(Pos.CENTER);
 
-        mainVbox.setPadding(new Insets(20));
+        parameters.setPadding(new Insets(20));
 
-
-
-        Scene scene = new Scene(mainHbox, 800, 600);
+        Scene scene = new Scene(mainVbox, 800, 600);
 
         stage.setScene(scene);
         stage.show();
@@ -205,12 +259,12 @@ public class Testing extends Application {
         do {
             x = velocityX * t;
             y = height + (velocityY * t) - (0.5 * gravity * t * t);
-            double adjustedY = 600 - y; // Adjust for JavaFX pane coordinates
+            double adjustedY = 594 - y; // Adjust for JavaFX pane coordinates
 
             if (adjustedY > ledgeBottomY) break;
 
-            precomputedPoints.add(x + 50);  // Adjust for pane coordinates (x)
-            precomputedPoints.add(600 - y); // Adjust for pane coordinates (y)
+            precomputedPoints.add(x + 102);  // Adjust for pane coordinates (x)
+            precomputedPoints.add(594 - y); // Adjust for pane coordinates (y)
             t += timeStep;
         } while (true); // Continue until it hits the ground
     }

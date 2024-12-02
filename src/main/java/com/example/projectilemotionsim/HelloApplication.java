@@ -8,6 +8,7 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.HBox;
@@ -15,6 +16,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Polyline;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
@@ -36,17 +38,17 @@ public class HelloApplication extends Application {
     private List<Double> precomputedPoints; // Stores the precomputed trajectory points
     private Timeline animationTimeline;    // Timeline for animating the points
 
+    private Line ground;
+
     private Circle projectile;
 
 
     @Override
     public void start(Stage stage) throws IOException {
 
-        final double LEFT_X = 50.0, RIGHT_X =60,  BOTTOM_Y = 600;
+        ground = new Line(0, 550, 800, 550);
 
-        double TOP_Y = 200;
 
-//        Rectangle
         ledge = new Rectangle(-100, 450, 200, 100);
 
         Label veloLabel = new Label("Velocity");
@@ -96,10 +98,9 @@ public class HelloApplication extends Application {
         heightVbox.setSpacing(10);
         heightVbox.setPadding(new Insets(20));
 
-//        Person
+
         person = new Person();
-//        person.setScaleX(3);
-//        person.setScaleY(3);
+
 
         trajectory = new Polyline();
         trajectory.setStroke(Color.BLUE);
@@ -111,14 +112,18 @@ public class HelloApplication extends Application {
 
 
 
+
         veloSlider.valueProperty().addListener((observable, oldvalue, newvalue) -> {
             chosenVelo.setText(String.format("Velocity: %.2f", newvalue));
             updateTrajectory(veloSlider, angleSlider, heightSlider);
+
+
         });
 
         angleSlider.valueProperty().addListener((observable, oldvalue, newvalue) -> {
             chosenAngle.setText(String.format("Angle: %.2f", newvalue));
             updateTrajectory(veloSlider, angleSlider, heightSlider);
+
 
         });
 
@@ -130,17 +135,21 @@ public class HelloApplication extends Application {
             ledge.setHeight(newvalue.doubleValue());
             ledge.setY(bottomY - newvalue.doubleValue());
             person.setLayoutY(ledge.getY() - person.getHeight());
+//            clearTrajectory();
             updateTrajectory(veloSlider, angleSlider, heightSlider);
 
         });
 
 
 
-        rectanglePane = new Pane(person,ledge, trajectory, projectile);
+        rectanglePane = new Pane(person, ledge, ground, trajectory, projectile);
         rectanglePane.setMinSize(600, 600);
+
+        rectanglePane.setMaxSize(900, 900);
 
 
         person.setLayoutY(416);
+        person.setLayoutX(90);
 
 
 
@@ -180,6 +189,14 @@ public class HelloApplication extends Application {
         animateTrajectory();
     }
 
+    private void clearTrajectory() {
+        trajectory.getPoints().clear();
+        projectile.setVisible(false);
+        if (animationTimeline != null) {
+            animationTimeline.stop();
+        }
+    }
+
     private void calculateProjectilePath(double velocity, double angle, double height) {
         precomputedPoints = new ArrayList<>(); // Reset the list of points
 
@@ -205,12 +222,12 @@ public class HelloApplication extends Application {
         do {
             x = velocityX * t;
             y = height + (velocityY * t) - (0.5 * gravity * t * t);
-            double adjustedY = 600 - y; // Adjust for JavaFX pane coordinates
+            double adjustedY = 594 - y; // Adjust for JavaFX pane coordinates
 
             if (adjustedY > ledgeBottomY) break;
 
-            precomputedPoints.add(x + 50);  // Adjust for pane coordinates (x)
-            precomputedPoints.add(600 - y); // Adjust for pane coordinates (y)
+            precomputedPoints.add(x + 102);  // Adjust for pane coordinates (x)
+            precomputedPoints.add(594 - y); // Adjust for pane coordinates (y)
             t += timeStep;
         } while (true); // Continue until it hits the ground
     }

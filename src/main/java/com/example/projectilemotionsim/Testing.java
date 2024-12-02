@@ -8,6 +8,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -34,37 +35,43 @@ public class Testing extends Application {
 
     private List<Double> precomputedPoints; // Stores the precomputed trajectory points
     private Timeline animationTimeline;    // Timeline for animating the points
-
     private Line ground;
 
     private Circle projectile;
 
+    private Label xDistanceLabel, yDistanceLabel; // Labels for distances
+
+    private Label totalDistanceY;
+
+
     private String lessonText = """
             Projectile motion is a form of motion experienced by an object that is thrown near the Earth's surface.
             It moves along a curved path under the action of gravity only.
-            
+                        
             Key Concepts:
             1. The horizontal motion and vertical motion are independent.
             2. The horizontal velocity remains constant.
             3. The vertical motion is affected by gravity, with an acceleration of 9.8 m/s².
-            
+                        
             Examples:
             - Throwing a ball.
             - A cannonball fired from a cannon.
             - Water sprayed from a fountain.
             """;
 
-
     @Override
     public void start(Stage stage) throws IOException {
 
         ground = new Line(0, 550, 800, 550);
 
-
         ledge = new Rectangle(-100, 450, 200, 100);
 
-//<<<<<<< HEAD
-//=======
+        xDistanceLabel = new Label("Distance X: 0.00");
+        yDistanceLabel = new Label("Max Height: 0.00");
+//        totalDistanceY = new Label("Total Y travelled: 0.00");
+
+
+
         MenuBar menuBar = new MenuBar();
         Menu fileMenu = new Menu("File");
         MenuItem exitMenuItem = new MenuItem("Exit");
@@ -74,17 +81,20 @@ public class Testing extends Application {
 
         menuBar.getMenus().add(fileMenu);
 
-        // theory button
         Button lessonButton = new Button("Lesson");
         lessonButton.setOnAction(e -> {
             Stage lessonStage = new Stage();
 
+            // write the lesson
+            Label lessonLabel = new Label("Lesson label");
             TextArea textArea = new TextArea(lessonText);
             textArea.setWrapText(true); // Wraps text for better readability
             textArea.setEditable(false); // Makes it read-only
 
-
-            Scene lessonScene = new Scene(textArea, 400, 300);
+            VBox lessonVBox = new VBox(lessonLabel);
+            Scene lessonScene = new Scene(lessonVBox);
+            lessonStage.setTitle("Lesson");
+//            Scene lessonScene = new Scene(textArea, 400, 300);
             lessonStage.setTitle("Lesson: Projectile Motion");
             lessonStage.setScene(lessonScene);
             lessonStage.showAndWait();
@@ -92,10 +102,9 @@ public class Testing extends Application {
 
         // combobox to choose the projectile type
         ComboBox comboBox = new ComboBox();
-        comboBox.getItems().addAll( "Human", "Cannon");
+        comboBox.getItems().addAll("Human", "Cannon");
         comboBox.getSelectionModel().selectFirst(); // automatically select first option
 
-//>>>>>>> b08e8808e89bdcdd834b8ad68eff4638e8642e1b
         Label veloLabel = new Label("Velocity");
         Slider veloSlider = new Slider(0, 100, 0);
         veloSlider.setMaxWidth(500);
@@ -103,8 +112,7 @@ public class Testing extends Application {
         veloSlider.setShowTickLabels(true);
         veloSlider.setMajorTickUnit(100);
         veloSlider.setBlockIncrement(1);
-        Label chosenVelo = new Label("0.00");
-
+        Label chosenVelo = new Label("50.00 m/s");
 
 
         Label angleLabel = new Label("Angle");
@@ -114,7 +122,7 @@ public class Testing extends Application {
         angleSlider.setShowTickLabels(true);
         angleSlider.setMajorTickUnit(20);
         angleSlider.setBlockIncrement(5);
-        Label chosenAngle = new Label("0.00");
+        Label chosenAngle = new Label("0.00 degrees");
 
 
         Label heightLabel = new Label("Height");
@@ -124,8 +132,7 @@ public class Testing extends Application {
         heightSlider.setShowTickLabels(true);
         heightSlider.setMajorTickUnit(100);
         heightSlider.setBlockIncrement(1);
-        Label chosenHeight = new Label("0.00");
-
+        Label chosenHeight = new Label("100.00 m");
 
 
         VBox veloVbox = new VBox(veloLabel, veloSlider, chosenVelo);
@@ -145,6 +152,8 @@ public class Testing extends Application {
 
 
         person = new Person();
+        person.setLayoutY(416);
+        person.setLayoutX(90);
 
 
         trajectory = new Polyline();
@@ -156,22 +165,16 @@ public class Testing extends Application {
         projectile.setVisible(false); // Initially hidden until animation starts
 
 
-
-
         veloSlider.valueProperty().addListener((observable, oldvalue, newvalue) -> {
             chosenVelo.setText(String.format("Velocity: %.2f", newvalue));
             updateTrajectory(veloSlider, angleSlider, heightSlider);
-
-
         });
 
         angleSlider.valueProperty().addListener((observable, oldvalue, newvalue) -> {
             chosenAngle.setText(String.format("Angle: %.2f", newvalue));
             updateTrajectory(veloSlider, angleSlider, heightSlider);
 
-
         });
-
 
 
         heightSlider.valueProperty().addListener((observable, oldvalue, newvalue) -> {
@@ -180,38 +183,55 @@ public class Testing extends Application {
             ledge.setHeight(newvalue.doubleValue());
             ledge.setY(bottomY - newvalue.doubleValue());
             person.setLayoutY(ledge.getY() - person.getHeight());
-//            clearTrajectory();
             updateTrajectory(veloSlider, angleSlider, heightSlider);
 
         });
 
 
-
         rectanglePane = new Pane(person, ledge, ground, trajectory, projectile);
         rectanglePane.setMinSize(600, 600);
-
-        rectanglePane.setMaxSize(900, 900);
 
 
         person.setLayoutY(416);
         person.setLayoutX(90);
 
+        Label typeLabel = new Label("Type of projectile");
+        VBox typeVBox = new VBox(typeLabel, comboBox);
+        typeVBox.setAlignment(Pos.CENTER);
+        typeVBox.setPadding(new Insets(20));
 
+        // vbox for lesson button
+        Label lessonButtonLabel = new Label("Click on the button for theory explanation");
+        lessonButtonLabel.setPadding(new Insets(20));
+        VBox lessonButtonVbox = new VBox(lessonButtonLabel, lessonButton);
+        lessonButtonVbox.setAlignment(Pos.CENTER);
+        lessonButtonVbox.setPadding(new Insets(20));
+
+
+
+//        HBox mainHbox = new HBox(rectanglePane, mainVbox);
+//        mainHbox.setAlignment(Pos.CENTER);
+
+
+        HBox distanceLabels;
+        HBox typeAndTheory = new HBox(lessonButtonVbox, typeVBox, xDistanceLabel, yDistanceLabel);
+        typeAndTheory.setAlignment(Pos.TOP_CENTER);
+        typeAndTheory.setSpacing(10);
 
         HBox parameters = new HBox(veloVbox, angleVbox, heightVbox);
         parameters.setAlignment(Pos.CENTER);
-        VBox mainVbox = new VBox(rectanglePane, parameters);
+        VBox mainVbox = new VBox(typeAndTheory, rectanglePane, parameters);
+
+        // BorderPane
+        BorderPane borderPane = new BorderPane();
+        borderPane.setCenter(mainVbox);
+        borderPane.setTop(menuBar);
+
+        mainVbox.setAlignment(Pos.CENTER_RIGHT);
+        mainVbox.setPadding(new Insets(20));
 
 
-//        HBox mainHbox = new HBox(rectanglePane, parameters);
-
-        mainVbox.setAlignment(Pos.CENTER);
-
-        parameters.setAlignment(Pos.CENTER);
-
-        parameters.setPadding(new Insets(20));
-
-        Scene scene = new Scene(mainVbox, 800, 600);
+        Scene scene = new Scene(borderPane, 1000, 1000);
 
         stage.setScene(scene);
         stage.show();
@@ -224,6 +244,20 @@ public class Testing extends Application {
         double velocity = veloSlider.getValue();
         double angle = angleSlider.getValue();
         double ledgeTopY = 615 - (ledge.getY());
+        double height = heightSlider.getValue();
+
+        double totalDistance = calculateTotalDistance(velocity, angle, height);
+        double maxHeight = calculateMaxHeight(velocity, angle, height);
+
+
+//        this.maxHeight.setText(String.format("Max Height: %.2f", maxHeight));
+
+        xDistanceLabel.setText(String.format("Distance X: %.2f", totalDistance));
+        yDistanceLabel.setText(String.format("Max Height: %.2f", maxHeight));
+
+
+
+
 
         calculateProjectilePath(velocity, angle, ledgeTopY); // Precompute points
         trajectory.getPoints().clear();
@@ -249,6 +283,7 @@ public class Testing extends Application {
 
         double ledgeTopY = ledge.getY();
         double ledgeBottomY = ledge.getY() + ledge.getHeight();
+
 
         // Time step for simulation
         double timeStep = 0.1;
@@ -287,6 +322,7 @@ public class Testing extends Application {
             KeyFrame keyFrame = new KeyFrame(Duration.seconds(index / 20.0), event -> {
                 trajectory.getPoints().addAll(precomputedPoints.get(index), precomputedPoints.get(index + 1));
                 updateProjectilePosition(precomputedPoints.get(index), precomputedPoints.get(index + 1));
+
             });
             animationTimeline.getKeyFrames().add(keyFrame);
         }
@@ -301,6 +337,37 @@ public class Testing extends Application {
         projectile.setCenterY(y);
     }
 
+    private double calculateTotalDistance(double velocity, double angle, double height) {
+
+
+        double angleRadians = Math.toRadians(angle);
+
+        // Horizontal velocity
+        double velocityX = velocity * Math.cos(angleRadians);
+
+        // Vertical velocity
+        double velocityY = velocity * Math.sin(angleRadians);
+
+        // Time to hit the ground (quadratic formula for y = 0)
+        double discriminant = Math.sqrt(velocityY * velocityY + 2 * gravity* height);
+        double timeToGround = (velocityY + discriminant) / gravity;
+
+        // Total horizontal distance
+        return velocityX * timeToGround;
+    }
+
+
+
+
+    private double calculateMaxHeight(double velocity, double angle, double height) {
+        double angleRadians = Math.toRadians(angle);
+
+        // Vertical velocity
+        double velocityY = velocity * Math.sin(angleRadians);
+
+        // Maximum height calculation
+        return height + (velocityY * velocityY) / (2 * gravity);
+    }
 
 
     public static void main(String[] args) {
